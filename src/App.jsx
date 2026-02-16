@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 
 // Valori di base del form
 const initialFormData = {
@@ -24,7 +25,11 @@ export default function App() {
   // onSubmit
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log("Post Caricato");
+
+    // chiamata POST
+    axios.post("https://67c5b4f3351c081993fb1ab6.mockapi.io/api/posts", formData).then((res) => {
+      console.log("Post Caricato: ", res.data);
+    });
   };
 
   return (
