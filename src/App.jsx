@@ -11,8 +11,10 @@ const initialFormData = {
 
 export default function App() {
   const [formData, setFormData] = useState(initialFormData);
+  const [postSuccess, setPostSuccess] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
 
-  // handler
+  // Handler
   const handleFormChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -25,10 +27,18 @@ export default function App() {
   // onSubmit
   const handleFormSubmit = (e) => {
     e.preventDefault();
-
+    setShowLoading(true);
     // chiamata POST
     axios.post("https://67c5b4f3351c081993fb1ab6.mockapi.io/api/posts", formData).then((res) => {
       console.log("Post Caricato: ", res.data);
+      // svuoto i campi e mostro l'alert
+      setFormData(initialFormData);
+      setShowLoading(false);
+      setPostSuccess(true);
+      // dopo 3 secondi si nasconde l'alert
+      setTimeout(() => {
+        setPostSuccess(false);
+      }, 3000);
     });
   };
 
@@ -72,7 +82,7 @@ export default function App() {
             Testo del Post
           </label>
           <textarea
-            value={formData.text}
+            value={formData.body}
             onChange={handleFormChange}
             name="body"
             //
@@ -96,8 +106,23 @@ export default function App() {
             </label>
           </div>
           {/* submit */}
-          <button className="btn btn-primary">Carica Post</button>
+          <div className="d-flex align-items-center gap-2">
+            <button className="btn btn-primary" disabled={showLoading}>
+              Carica Post
+            </button>
+            {showLoading && (
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            )}
+          </div>
         </form>
+        {/* ALERT */}
+        {postSuccess && (
+          <div className="alert alert-success w-75 mx-auto mt-4 text-center" role="alert">
+            Post caricato con successo!
+          </div>
+        )}
       </div>
     </>
   );
